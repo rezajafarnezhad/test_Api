@@ -1,3 +1,8 @@
+using test_Api.Service.PayFormMellat;
+using test_Api.Service.PayFromMeli;
+using test_Api.Service.PayFromZarinPal;
+using test_Api.Strategy;
+
 namespace test_Api
 {
     public class Program
@@ -13,7 +18,11 @@ namespace test_Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
+            builder.Services.AddScoped<IPaymentFactory, PaymentFactory>();
+            builder.Services.AddScoped<IPaymentStrategy, PayFromMeli>();
+            builder.Services.AddScoped<IPaymentStrategy, PayFromMellat>();
+            builder.Services.AddScoped<IPaymentStrategy, PayFromZarinPal>();
+            //  builder.Services.AddScoped<IPaymentStrategy>();
 
             builder.Services.AddHttpClient("zinbal", httpClient =>
             {

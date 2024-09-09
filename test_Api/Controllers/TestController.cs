@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using test_Api.Strategy;
 
 namespace test_Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController(IHttpClientFactory httpClientFactory) : ControllerBase
+    public class TestController(IHttpClientFactory httpClientFactory, IPaymentFactory PaymentFactory) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var httpClient = httpClientFactory.CreateClient("zinbal");
+            var httpClient = httpClientFactory.CreateClient("pinball");
             var result = await httpClient.GetAsync("character/330");
 
             if (!result.IsSuccessStatusCode)
@@ -21,7 +22,17 @@ namespace test_Api.Controllers
             return Ok(data.Result);
         }
 
+
+        [HttpPost("Payment")]
+        public async Task<IActionResult> Payment([FromForm] PaymentType paymentType)
+        {
+            var str = PaymentFactory.GetStrategy(paymentType);
+            var data = await str.ExecutionPayment(1200);
+            return Ok(data);
+        }
+
     }
+
 }
 
 public class Location
